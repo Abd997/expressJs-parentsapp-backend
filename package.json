@@ -1,0 +1,32 @@
+{
+  "name": "parents_app_backend",
+  "version": "0.1.0",
+  "description": "backend application for a parents mobile app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "NODE_ENV=development nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stimm-Development/elternapp_restapi.git"
+  },
+  "author": "abdullahashfaq997@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stimm-Development/elternapp_restapi/issues"
+  },
+  "homepage": "https://github.com/Stimm-Development/elternapp_restapi#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.21.2",
+    "winston": "^3.8.1"
+  },
+  "devDependencies": {
+    "jest": "^28.1.2",
+    "nodemon": "^2.0.18",
+    "supertest": "^6.2.4"
+  }
+}
