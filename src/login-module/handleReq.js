@@ -11,8 +11,10 @@ module.exports = async (req, res) => {
 	const { email, password } = req.body;
 	try {
 		const user = await Parent.findOne({
-			email: email,
-			password: password
+			where: {
+				email: email,
+				password: password
+			}
 		});
 		if (!user) {
 			return sendErrorResponse(res, 401, "User not found");
