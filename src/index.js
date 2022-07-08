@@ -2,15 +2,9 @@ const sequelize = require("./utils/db");
 const app = require("./app");
 const log = require("./utils/logger");
 require("dotenv").config();
-
 const Parent = require("./models/parent");
 
-sequelize
-	.sync({ alter: true })
-	.then((result) =>
-		console.log("All models were synchronized successfully.")
-	)
-	.catch((err) => console.log(err));
+sequelize.sync({ force: true });
 
 const PORT = process.env.PORT || 8080;
 

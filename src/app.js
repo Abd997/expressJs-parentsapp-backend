@@ -1,6 +1,6 @@
 const express = require("express");
-const login = require("./login-module/login");
 const app = express();
+const login = require("./login-module/login");
 const registration = require("./registration-module/registration");
 const sendErrorResponse = require("./sendErrorResponse");
 

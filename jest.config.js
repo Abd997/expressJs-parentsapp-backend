@@ -1,5 +1,6 @@
-const config = {
-	verbose: true
-};
+"use strict";
 
-module.exports = config;
+module.exports = {
+	verbose: true,
+	bail: true
+};

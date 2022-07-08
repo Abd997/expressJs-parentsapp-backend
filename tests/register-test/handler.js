@@ -3,13 +3,7 @@ const app = require("../../src/app");
 const sequelize = require("../../src/utils/db");
 
 module.exports = () =>
-	describe("test controller", () => {
-		let db = sequelize;
-
-		beforeAll(async () => {
-			await db.sync({ force: true });
-		});
-
+	describe("test registration handler", () => {
 		const route = "/register";
 
 		it("should return 201 when a user is registered", async () => {
@@ -20,9 +14,5 @@ module.exports = () =>
 			});
 			expect(response.statusCode).toBe(201);
 			expect(response.body.msg).toBe("User successfully created");
-		});
-
-		afterAll(async () => {
-			await db.close();
 		});
 	});

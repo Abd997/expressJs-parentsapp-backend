@@ -1,5 +1,6 @@
 const e = require("express");
 const Parent = require("../models/parent");
+const sendErrorResponse = require("../sendErrorResponse");
 
 /**
  *
@@ -8,12 +9,17 @@ const Parent = require("../models/parent");
  */
 module.exports = async (req, res) => {
 	const { email, name, password } = req.body;
-	const newUser = await Parent.create({
-		email: email,
-		name: name,
-		password: password
-	});
-	res.status(201).json({
-		msg: "User successfully created"
-	});
+	try {
+		const newUser = await Parent.create({
+			email: email,
+			name: name,
+			password: password
+		});
+		res.status(201).json({
+			msg: "User successfully created"
+		});
+	} catch (err) {
+		console.log(err);
+		sendErrorResponse(500, res, "User not created");
+	}
 };
