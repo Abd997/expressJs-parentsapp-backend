@@ -1,6 +1,6 @@
 {
   "name": "parents_app_backend",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "backend application for a parents mobile app",
   "main": "index.js",
   "scripts": {
