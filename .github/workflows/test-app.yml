@@ -31,6 +31,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          -p 5432:5432
 
     steps:
     - uses: actions/checkout@v3
@@ -39,5 +40,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+      env:
+        DB_HOST: "localhost"
+        DB_USER: "postgres"
+        PASSWORD: "password"
     - run: npm ci
     - run: npm test
