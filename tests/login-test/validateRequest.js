@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../../src/app");
 
-module.exports = () =>
+module.exports = (data) =>
 	describe("validate the request", () => {
 		it("should return 401 when no credentials sent", async () => {
 			const response = await request(app).post("/login");

@@ -13,14 +13,12 @@ describe("test backend", () => {
 				password: "password"
 			});
 			await pgclient.connect();
-
 			await pgclient.query(
 				`SELECT *, pg_terminate_backend(pid)
           FROM pg_stat_activity 
           WHERE pid <> pg_backend_pid()
           AND datname = 'database_test'`
 			);
-
 			await pgclient.query("DROP DATABASE IF EXISTS database_test");
 			await pgclient.query("CREATE DATABASE database_test");
 			await sequelize.sync({ force: true });
@@ -29,8 +27,12 @@ describe("test backend", () => {
 		}
 	});
 
-	registerTest();
-	loginTest();
+	const data = {
+		email: "test2@gmail.com"
+	};
+
+	registerTest(data);
+	loginTest(data);
 
 	afterAll(async () => {
 		await sequelize.close();

@@ -1,8 +1,8 @@
 const testValidateRequest = require("./validateRequest");
 const testHandler = require("./handler");
 
-module.exports = () =>
+module.exports = (data) =>
 	describe("test login module", () => {
-		testValidateRequest();
-		testHandler();
+		testValidateRequest(data);
+		testHandler(data);
 	});
