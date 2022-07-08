@@ -36,8 +36,8 @@ jobs:
 
     steps:
     - run: |
-          apt-get update
-          apt-get install --yes --no-install-recommends postgresql-client
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends postgresql-client
     - run: |
           psql -h postgres -U postgres -c 'CREATE DATABASE database_test'
     - uses: actions/checkout@v3
