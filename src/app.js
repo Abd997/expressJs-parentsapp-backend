@@ -9,7 +9,7 @@ const {
 	normalRoutes
 } = require("./routes");
 
-const VERSION = "0.5.0";
+const VERSION = "0.5.1";
 
 app.use(express.json());
 
