@@ -6,8 +6,11 @@ require("dotenv").config();
 
 (async () => {
 	try {
-		// await sequelize.sync();
-		await connectDB();
+		if (process.env.NODE_ENV === "development") {
+			await connectDB();
+		} else if (process.env.NODE_ENV === "production") {
+			await connectDB();
+		}
 		log.info("Backend is connected to database");
 	} catch (err) {
 		log.error("Could not connect to database");

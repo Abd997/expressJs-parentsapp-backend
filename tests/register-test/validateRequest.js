@@ -57,15 +57,17 @@ module.exports = (data) =>
 			expect(response.body.errors[0].msg).toBe("Name not provided");
 		});
 
-		it("should return 409 Email already in use when user is already registered", async () => {
+		it("should return 401 Email already in use when user is already registered", async () => {
 			let response = await request(app).post(route).send({
 				email: "email@gmail.com",
 				name: "email",
+				username: "user",
 				password: "password"
 			});
 			response = await request(app).post(route).send({
 				email: "email@gmail.com",
 				name: "email",
+				username: "user1",
 				password: "password"
 			});
 			expect(response.statusCode).toBe(401);

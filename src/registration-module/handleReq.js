@@ -1,5 +1,5 @@
 const e = require("express");
-const Parent = require("../models/parent");
+const ParentRepo = require("../repo/ParentRepo");
 const sendErrorResponse = require("../sendErrorResponse");
 
 /**
@@ -8,12 +8,17 @@ const sendErrorResponse = require("../sendErrorResponse");
  * @param {e.Response} res
  */
 module.exports = async (req, res) => {
-	const { email, name, password } = req.body;
+	const { username, email, password, pregnancyMonth } = req.body;
+	const user = await ParentRepo.findUser(email);
+	if (user) {
+		return sendErrorResponse(401, res, "E-mail already in use");
+	}
 	try {
-		const newUser = await Parent.create({
-			email: email,
-			name: name,
-			password: password
+		const newUser = await ParentRepo.addParent({
+			username,
+			email,
+			password,
+			pregnancyMonth
 		});
 		res.status(201).json({
 			msg: "User successfully created"

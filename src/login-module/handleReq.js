@@ -2,6 +2,7 @@ const e = require("express");
 const sendErrorResponse = require("../sendErrorResponse");
 const Parent = require("../models/parent");
 const jwt = require("jsonwebtoken");
+const ParentRepo = require("../repo/ParentRepo");
 
 /**
  *
@@ -11,12 +12,7 @@ const jwt = require("jsonwebtoken");
 module.exports = async (req, res) => {
 	const { email, password } = req.body;
 	try {
-		const user = await Parent.findOne({
-			where: {
-				email: email,
-				password: password
-			}
-		});
+		const user = await ParentRepo.authenticateUser(email, password);
 		if (!user) {
 			return sendErrorResponse(res, 401, "User not found");
 		}
@@ -25,7 +21,8 @@ module.exports = async (req, res) => {
 			msg: "User successfully authenticated",
 			token: token
 		});
-	} catch (err) {
+	} catch (error) {
+		console.log(error);
 		return sendErrorResponse(res, 500, "Internal error");
 	}
 };
