@@ -1,5 +1,6 @@
 const e = require("express");
 const { body, validationResult } = require("express-validator");
+const Parent = require("../models/parent");
 const sendErrorResponse = require("../sendErrorResponse");
 
 /**
@@ -21,6 +22,15 @@ module.exports = [
 		.exists({ checkFalsy: true })
 		.withMessage("Email not provided"),
 	body("email").isEmail().withMessage("Email not valid"),
+	body("email").custom((email) => {
+		return Parent.findOne({ where: { email: email } }).then(
+			(user) => {
+				if (user) {
+					return Promise.reject("E-mail already in use");
+				}
+			}
+		);
+	}),
 	body("password")
 		.exists({ checkFalsy: true })
 		.withMessage("Password not provided"),

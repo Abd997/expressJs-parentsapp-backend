@@ -7,3 +7,5 @@ __tests__
 Dockerfile
 
 .gitignore
+
+npm-debug.log

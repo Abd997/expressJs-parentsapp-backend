@@ -1,6 +1,7 @@
 const e = require("express");
 const sendErrorResponse = require("../sendErrorResponse");
 const Parent = require("../models/parent");
+const jwt = require("jsonwebtoken");
 
 /**
  *
@@ -19,8 +20,10 @@ module.exports = async (req, res) => {
 		if (!user) {
 			return sendErrorResponse(res, 401, "User not found");
 		}
+		const token = jwt.sign(email, process.env.JWT_SIGN_SECRET);
 		res.status(200).json({
-			msg: "User successfully authenticated"
+			msg: "User successfully authenticated",
+			token: token
 		});
 	} catch (err) {
 		return sendErrorResponse(res, 500, "Internal error");

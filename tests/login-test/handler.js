@@ -4,7 +4,7 @@ const app = require("../../src/app");
 module.exports = (data) =>
 	describe("test login handler", () => {
 		it("returns 200 if a user logins successfully", async () => {
-			const response = await request(app).post("/login").send({
+			const response = await request(app).post("/user/login").send({
 				email: data.email,
 				password: "password"
 			});
@@ -12,5 +12,6 @@ module.exports = (data) =>
 			expect(response.body.msg).toEqual(
 				"User successfully authenticated"
 			);
+			expect(response.body.token).toBeDefined();
 		});
 	});

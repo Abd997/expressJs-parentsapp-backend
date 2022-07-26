@@ -6,8 +6,9 @@
   "scripts": {
     "test": "NODE_ENV=test jest /tests/app.test.js",
     "test:watch": "NODE_ENV=test jest --watch",
-    "dev": "NODE_ENV=development nodemon src/index.js",
-    "start": "NODE_ENV=development node src/index.js"
+    "start:dev": "NODE_ENV=development nodemon src/index.js",
+    "start:prod": "NODE_ENV=production node src/index.js",
+    "migrate": "node data-migration"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,14 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.21.2",
+    "sequelize": "^6.21.3",
     "winston": "^3.8.1"
   },
   "devDependencies": {
+    "@types/jest": "^28.1.6",
     "jest": "^28.1.2",
     "nodemon": "^2.0.18",
     "supertest": "^6.2.4"

@@ -4,7 +4,7 @@ const sequelize = require("../../src/utils/db");
 
 module.exports = (data) =>
 	describe("test registration handler", () => {
-		const route = "/register";
+		const route = "/user/register";
 
 		it("should return 201 when a user is registered", async () => {
 			const response = await request(app).post(route).send({

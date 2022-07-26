@@ -17,6 +17,6 @@ module.exports = (
 	}
 	return res.status(statuscode).json({
 		statuscode,
-		message
+		errors: [{ msg: message }]
 	});
 };

@@ -1,27 +1,20 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Parent = sequelize.define("parent", {
+const Topic = sequelize.define("main_topic", {
 	id: {
 		type: Sequelize.INTEGER,
 		autoIncrement: true,
 		allowNull: false,
 		primaryKey: true
 	},
-	username: {
+	name: {
 		type: Sequelize.STRING,
 		allowNull: false
 	},
-	password: {
+	description: {
 		type: Sequelize.STRING,
 		allowNull: false
-	},
-	email: {
-		type: Sequelize.STRING,
-		allowNull: false
-	},
-	age: {
-		type: Sequelize.INTEGER
 	},
 	pregnancy_month: {
 		type: Sequelize.INTEGER,
@@ -29,4 +22,4 @@ const Parent = sequelize.define("parent", {
 	}
 });
 
-module.exports = Parent;
+module.exports = Topic;
