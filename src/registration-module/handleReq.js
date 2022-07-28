@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
 	const { username, email, password, pregnancyMonth } = req.body;
 	const user = await ParentRepo.findUser(email);
 	if (user) {
-		return sendErrorResponse(401, res, "E-mail already in use");
+		return sendErrorResponse(res, 401, "E-mail already in use");
 	}
 	try {
 		const newUser = await ParentRepo.addParent({
@@ -25,6 +25,6 @@ module.exports = async (req, res) => {
 		});
 	} catch (err) {
 		console.log(err);
-		sendErrorResponse(500, res, "User not created");
+		return sendErrorResponse(res, 500, error.message);
 	}
 };

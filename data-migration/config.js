@@ -1,4 +1,7 @@
+const dbConfig = require("../config/dbConfig");
+
 module.exports = {
 	user: "postgres",
-	password: "password"
+	password: "password",
+	host: dbConfig.host
 };

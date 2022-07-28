@@ -1,23 +1,22 @@
-const Parent = require("../models/parent");
 const { connectedClient } = require("../utils/database");
 
 module.exports = ParentRepo = {
 	addParent: async function (parent) {
 		const newUser = await connectedClient.query(`
       INSERT INTO parents (
-        username, password, email, pregnancy_month
+        username, password, estm_birth_date_child
       ) VALUES (
-        '${parent.username}', '${parent.password}','${parent.email}', ${parent.pregnancyMonth}
+        '${parent.username}', '${parent.password}','${parent.birthDateChild}'
       )
     `);
-
 		// console.log(newUser);
 		return newUser;
 	},
-	authenticateUser: async function (email, password) {
+
+	authenticateUser: async function (username, password) {
 		const result = await connectedClient.query(`
       SELECT id from parents
-      WHERE email = '${email}' AND password = '${password}'
+      WHERE username='${username}' AND password='${password}'
     ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {
@@ -25,10 +24,11 @@ module.exports = ParentRepo = {
 		}
 		return result;
 	},
-	findUser: async function (email) {
+
+	findUser: async function (username) {
 		const result = await connectedClient.query(`
       SELECT id from parents
-      WHERE email = '${email}'
+      WHERE username = '${username}'
     ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {

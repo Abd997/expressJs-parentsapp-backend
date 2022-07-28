@@ -2,18 +2,16 @@ const sequelize = require("./utils/db");
 const app = require("./app");
 const log = require("./utils/logger");
 const { connectDB } = require("./utils/database");
+const migrate = require("../data-migration");
 require("dotenv").config();
 
 (async () => {
+	await migrate();
 	try {
-		if (process.env.NODE_ENV === "development") {
-			await connectDB();
-		} else if (process.env.NODE_ENV === "production") {
-			await connectDB();
-		}
+		await connectDB();
 		log.info("Backend is connected to database");
-	} catch (err) {
-		log.error("Could not connect to database");
+	} catch (error) {
+		log.error("Could not connect to database \n" + error);
 	}
 	try {
 		const PORT = process.env.PORT || 8080;

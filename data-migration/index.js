@@ -2,7 +2,7 @@ const { Client } = require("pg");
 const config = require("./config");
 const migrateDevDatabase = require("./migrateDevDatabase");
 
-(async () => {
+const migrate = async () => {
 	let client = new Client(config);
 	try {
 		console.log("Migrating dev database");
@@ -15,4 +15,8 @@ const migrateDevDatabase = require("./migrateDevDatabase");
 		return;
 	}
 	await client.end();
-})();
+};
+
+// migrate();
+
+module.exports = migrate;
