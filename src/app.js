@@ -9,7 +9,7 @@ const {
 const registerUser = require("./controllers/registerUser");
 const authenticateUser = require("./controllers/authenticateUser");
 
-const VERSION = "0.6.2";
+const VERSION = "0.6.3";
 
 app.use(express.json());
 

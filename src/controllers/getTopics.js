@@ -1,7 +1,19 @@
 const e = require("express");
-const topicRepo = require("../repo/topicRepo");
+const TopicRepo = require("../repo/TopicRepo");
+const topicRepo = require("../repo/TopicRepo");
 const sendErrorResponse = require("../sendErrorResponse");
 const logger = require("../utils/logger");
+
+/**
+ *
+ * @param {e.Request} req
+ */
+const validate = async (req) => {
+	const pregnancyStage = req.params.pregnancyStage;
+	if (!pregnancyStage) {
+		throw new Error("Pregnancy stage not sent");
+	}
+};
 
 /**
  *
@@ -9,12 +21,13 @@ const logger = require("../utils/logger");
  * @param {e.Response} res
  */
 module.exports = async (req, res) => {
-	/** @type {string}*/
-	const pregnancyMonth = req.params.pregnancyMonth;
-	let topics = [];
 	try {
-		var data = await topicRepo.getTopicsForPregnancyMonth(
-			pregnancyMonth
+		await validate(req);
+		/** @type {string}*/
+		const pregnancyStage = req.params.pregnancyStage;
+		let topics = [];
+		var data = await TopicRepo.getTopicsForPregnancyStage(
+			pregnancyStage
 		);
 		for (let i = 0; i < data.length; i++) {
 			let subTopics = await topicRepo.getSubTopics(data[i].id);
@@ -25,8 +38,7 @@ module.exports = async (req, res) => {
 			topics.push(data);
 		}
 	} catch (error) {
-		logger.error(error);
-		return sendErrorResponse(res, 500, "Could not get topics");
+		return sendErrorResponse(res, 500, error.message);
 	}
 	res.json({ topics: data });
 };
