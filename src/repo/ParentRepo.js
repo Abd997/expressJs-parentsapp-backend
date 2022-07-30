@@ -30,9 +30,21 @@ const ParentRepo = {
       SELECT id from parents
       WHERE email = '${email}'
     ;`);
+		console.log(result);
+		if (result.rowCount == 0 || !result) {
+			return null;
+		}
+		return result;
+	},
+
+	findUserByUsername: async function (username) {
+		const result = await connectedClient.query(`
+      SELECT id from parents
+      WHERE username = '${username}'
+    ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {
-			throw new Error("User not found");
+			return null;
 		}
 		return result;
 	},
@@ -56,7 +68,7 @@ const ParentRepo = {
     ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {
-			throw new Error("Data not found");
+			return null;
 		}
 		return result.rows[0].pregnancy_stage;
 	}

@@ -6,16 +6,10 @@ const {
 	authorizedRoutes,
 	normalRoutes
 } = require("./routes");
-const registerUser = require("./controllers/registerUser");
-const loginUser = require("./controllers/loginUser");
 
-const VERSION = "0.7.1";
+const VERSION = "0.8.0";
 
 app.use(express.json());
-
-app.post("/user/login", loginUser);
-
-app.post("/user/register", registerUser);
 
 app.use("/admin", adminRoutes);
 app.use("/auth", authorizedRoutes);
