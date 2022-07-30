@@ -1,22 +1,22 @@
 const { connectedClient } = require("../utils/database");
 
-module.exports = ParentRepo = {
+const ParentRepo = {
 	addParent: async function (parent) {
 		const newUser = await connectedClient.query(`
       INSERT INTO parents (
-        username, password, estm_birth_date_child
+        email, username, password
       ) VALUES (
-        '${parent.username}', '${parent.password}','${parent.birthDateChild}'
+        '${parent.email}', '${parent.username}', '${parent.password}'
       )
     `);
 		// console.log(newUser);
 		return newUser;
 	},
 
-	authenticateUser: async function (username, password) {
+	authenticateUser: async function (email, password) {
 		const result = await connectedClient.query(`
-      SELECT id from parents
-      WHERE username='${username}' AND password='${password}'
+      SELECT id FROM parents
+      WHERE email='${email}' AND password='${password}'
     ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {
@@ -25,15 +25,41 @@ module.exports = ParentRepo = {
 		return result;
 	},
 
-	findUser: async function (username) {
+	findUser: async function (email) {
 		const result = await connectedClient.query(`
       SELECT id from parents
-      WHERE username = '${username}'
+      WHERE email = '${email}'
     ;`);
 		// console.log(result);
 		if (result.rowCount == 0) {
-			return null;
+			throw new Error("User not found");
 		}
 		return result;
+	},
+
+	checkUser: async function (email) {
+		const result = await connectedClient.query(`
+      SELECT id from parents
+      WHERE email = '${email}'
+    ;`);
+		// console.log(result);
+		if (result.rowCount == 0) {
+			return false;
+		}
+		return true;
+	},
+
+	getPregnancyStage: async function (email) {
+		const result = await connectedClient.query(`
+      SELECT pregnancy_stage from parents
+      WHERE email = '${email}'
+    ;`);
+		// console.log(result);
+		if (result.rowCount == 0) {
+			throw new Error("Data not found");
+		}
+		return result.rows[0].pregnancy_stage;
 	}
 };
+
+module.exports = ParentRepo;

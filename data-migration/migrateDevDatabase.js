@@ -1,4 +1,5 @@
 const { Client } = require("pg");
+const logger = require("../src/utils/logger");
 const config = require("./config");
 
 /**
@@ -9,10 +10,10 @@ const config = require("./config");
 module.exports = async (client) => {
 	const dbName = "db_dev";
 
-	console.log("Initiating connection to database...");
+	logger.info("Initiating connection to database...");
 	await client.connect();
-	console.log("Connected to database");
-	console.log("Creating dev database...");
+	logger.info("Connected to database");
+	logger.info("Creating dev database...");
 	await client.query(`
     SELECT
     pg_terminate_backend(pid) 
@@ -27,19 +28,20 @@ module.exports = async (client) => {
   `);
 	await client.query(`DROP DATABASE IF EXISTS ${dbName}`);
 	await client.query(`CREATE DATABASE ${dbName}`);
-	console.log("Created dev database");
+	logger.info("Created dev database");
 	await client.end();
 	client = new Client({ ...config, database: dbName });
 	await client.connect();
+
 	await client.query(`
 		CREATE TABLE parents (
       id                      serial PRIMARY KEY,
-      username                VARCHAR ( 50 ) UNIQUE NOT NULL,
-      password                VARCHAR ( 50 ) NOT NULL,
-      email                   VARCHAR ( 255 ),
+      username                VARCHAR ( 100 ) UNIQUE NOT NULL,
+      email                   VARCHAR ( 255 ) UNIQUE NOT NULL,
+      password                VARCHAR ( 100 ) NOT NULL,
       age                     INTEGER,
-      estm_birth_date_child   VARCHAR( 100 ) NOT NULL,
-      pregnancy_stage         INTEGER,
+      estm_birth_date_child   VARCHAR( 100 ),
+      pregnancy_stage         INTEGER NOT NULL DEFAULT 1,
       created_on              TIMESTAMP NOT NULL DEFAULT NOW(),
       last_login              TIMESTAMP DEFAULT NOW() 
     );`);
@@ -53,6 +55,7 @@ module.exports = async (client) => {
       created_on        TIMESTAMP NOT NULL DEFAULT NOW(),
       last_updated      TIMESTAMP DEFAULT NOW() 
     );`);
+
 	await client.query(`
     CREATE TABLE sub_topics(
       id                          serial PRIMARY KEY,
@@ -60,6 +63,7 @@ module.exports = async (client) => {
       description                 VARCHAR ( 1000 ),
       created_on                  TIMESTAMP NOT NULL DEFAULT NOW(),
       last_updated                TIMESTAMP DEFAULT NOW(),
+      pregnancy_stage             INTEGER NOT NULL,
       fk_main_topic               integer,
       FOREIGN KEY(fk_main_topic)  REFERENCES main_topics(id)
     );`);
@@ -77,47 +81,52 @@ module.exports = async (client) => {
       FOREIGN KEY(fk_sub_topic)   REFERENCES sub_topics(id)
     );`);
 
-	for (let i = 1; i < 11; i++) {
-		await client.query(`
-      INSERT INTO parents (
-        username, password, email, age, pregnancy_stage, estm_birth_date_child
-      ) VALUES (
-        'parent${i}', 'password', 'parent${i}@gmail.com', 31, ${
-			i <= 6 ? i : 6
-		}, ${Date.now()}
-      );`);
-	}
+	// insert 2 parents for every pregnancy stage
 	for (let i = 0; i < 2; i++) {
-		for (let j = 1; j < 10; j++) {
+		for (let j = 1; j < 7; j++) {
 			await client.query(`
-        INSERT INTO main_topics (
-            name, description, pregnancy_stage
+        INSERT INTO parents (
+          username, password, email, age, pregnancy_stage, estm_birth_date_child
         ) VALUES (
-          'topic${j}', 'description', ${j <= 6 ? j : 6}
+          'parent${i}${j}', 'password', 'parent${i}${j}@gmail.com', 31, ${j}, ${Date.now()}
         );`);
 		}
 	}
-	for (let i = 1; i < 11; i++) {
-		for (let j = 1; j < 11; j++) {
+
+	// insert main topics for every pregnancy stage
+	for (let i = 1; i < 7; i++) {
+		await client.query(`
+      INSERT INTO main_topics (
+          name, description, pregnancy_stage
+      ) VALUES (
+        'topic${i}', 'description', ${i}
+      );`);
+	}
+
+	// insert 2 sub topics for every main topic
+	for (let i = 0; i < 2; i++) {
+		for (let j = 1; j < 7; j++) {
 			await client.query(`
-        INSERT INTO sub_topics (
-          name, description, fk_main_topic
-        ) VALUES (
-          'subtopic${j}', 'description', ${i}
-        );
-      `);
+	      INSERT INTO sub_topics (
+	        name, description, fk_main_topic, pregnancy_stage
+	      ) VALUES (
+	        'subtopic${j}${i}', 'description', ${j}, ${j}
+	      ); `);
 		}
 	}
-	for (let i = 1; i < 101; i++) {
-		for (let j = 1; j < 4; j++) {
+
+	// insert 6 articles for every sub topic
+	for (let i = 1; i < 13; i++) {
+		for (let j = 1; j < 7; j++) {
 			await client.query(`
-        INSERT INTO articles (
-          headline, description, signature, pregnancy_stage, fk_sub_topic
-        ) VALUES (
-          'headline', 'description', 'signature', ${j}, ${i}
-        );
-      `);
+	      INSERT INTO articles (
+	        headline, description, signature, pregnancy_stage, fk_sub_topic
+	      ) VALUES (
+	        'headline${i}${j}', 'description', 'signature', ${j}, ${i}
+	      );
+	    `);
 		}
 	}
+
 	return client;
 };

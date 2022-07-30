@@ -1,5 +1,7 @@
 const e = require("express");
 const ArticleRepo = require("../repo/ArticleRepo");
+const { findUser } = require("../repo/ParentRepo");
+const ParentRepo = require("../repo/ParentRepo");
 const sendErrorResponse = require("../sendErrorResponse");
 
 /**
@@ -7,9 +9,9 @@ const sendErrorResponse = require("../sendErrorResponse");
  * @param {e.Request} req
  */
 const validate = async (req) => {
-	const { pregnancyStage } = req.params;
-	if (!pregnancyStage) {
-		throw new Error("Pregnancy stage not sent");
+	const email = req.params.email;
+	if (!email) {
+		throw new Error("Email not sent");
 	}
 };
 
@@ -21,13 +23,16 @@ const validate = async (req) => {
 module.exports = async (req, res) => {
 	try {
 		await validate(req);
-		const { pregnancyStage } = req.params;
+		const email = req.params.email;
+		await findUser(email);
+		const pregnancyStage = await ParentRepo.getPregnancyStage(email);
 		const articles = await ArticleRepo.findArticles(pregnancyStage);
 		return res.json({
 			totalArticles: articles.length,
 			data: articles
 		});
 	} catch (error) {
+		// console.error(error);
 		return sendErrorResponse(res, 500, error.message);
 	}
 };

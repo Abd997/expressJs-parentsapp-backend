@@ -37,8 +37,8 @@ module.exports = async (req, res) => {
 			};
 			topics.push(data);
 		}
+		res.json({ topics: data });
 	} catch (error) {
 		return sendErrorResponse(res, 500, error.message);
 	}
-	res.json({ topics: data });
 };

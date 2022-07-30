@@ -4,9 +4,9 @@ const jwt = require("jsonwebtoken");
 const ParentRepo = require("../repo/ParentRepo");
 
 const validate = async (req) => {
-	const { username, password } = req.body;
-	if (!username) {
-		throw new Error("Username not sent");
+	const { email, password } = req.body;
+	if (!email) {
+		throw new Error("Email not sent");
 	} else if (!password) {
 		throw new Error("Password not sent");
 	}
@@ -20,15 +20,12 @@ const validate = async (req) => {
 module.exports = async (req, res) => {
 	try {
 		await validate(req);
-		const { username, password } = req.body;
-		const user = await ParentRepo.authenticateUser(
-			username,
-			password
-		);
+		const { email, password } = req.body;
+		const user = await ParentRepo.authenticateUser(email, password);
 		if (!user) {
 			throw new Error("User not found");
 		}
-		const token = jwt.sign(username, process.env.JWT_SIGN_SECRET);
+		const token = jwt.sign(email, process.env.JWT_SIGN_SECRET);
 		res.status(200).json({
 			msg: "User successfully authenticated",
 			token: token

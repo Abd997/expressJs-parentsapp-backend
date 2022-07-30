@@ -3,13 +3,13 @@ const ParentRepo = require("../repo/ParentRepo");
 const sendErrorResponse = require("../sendErrorResponse");
 
 const validate = async (req) => {
-	const { username, password, birthDateChild } = req.body;
-	if (!username) {
+	const { email, username, password } = req.body;
+	if (!email) {
+		throw new Error("Email not sent");
+	} else if (!username) {
 		throw new Error("Username not sent");
 	} else if (!password) {
 		throw new Error("Password not sent");
-	} else if (!birthDateChild) {
-		throw new Error("Birth date not sent");
 	}
 };
 
@@ -21,15 +21,15 @@ const validate = async (req) => {
 module.exports = async (req, res) => {
 	try {
 		await validate(req);
-		const { username, password, birthDateChild } = req.body;
-		const user = await ParentRepo.findUser(username);
-		if (user) {
+		const { email, username, password } = req.body;
+		const userExists = await ParentRepo.checkUser(email);
+		if (userExists) {
 			throw new Error("User already registered");
 		}
 		const newUser = await ParentRepo.addParent({
+			email: email,
 			username: username,
-			password: password,
-			birthDateChild: birthDateChild
+			password: password
 		});
 		res.status(201).json({
 			msg: "User successfully created"

@@ -11,7 +11,8 @@
     "container:build": "docker build -t abdullahcontainerregistry.azurecr.io/parents_app_backend .",
     "container": "docker run -it -p 8080:8080 abdullahcontainerregistry.azurecr.io/parents_app_backend",
     "container:push": "docker push abdullahcontainerregistry.azurecr.io/parents_app_backend",
-    "migrate": "node data-migration"
+    "migrate": "node data-migration",
+    "deploy": "./deploy.sh"
   },
   "repository": {
     "type": "git",

@@ -1,16 +1,17 @@
 const { Client } = require("pg");
+const logger = require("../src/utils/logger");
 const config = require("./config");
 const migrateDevDatabase = require("./migrateDevDatabase");
 
 const migrate = async () => {
 	let client = new Client(config);
 	try {
-		console.log("Migrating dev database");
+		logger.info("Migrating dev database");
 		client = await migrateDevDatabase(client);
-		console.log("Dev database migration completed");
+		logger.info("Dev database migration completed");
 	} catch (error) {
-		console.log("Failed to migrate dev database");
-		console.error(error);
+		logger.error("Failed to migrate dev database");
+		logger.error(error);
 		await client.end();
 		return;
 	}
