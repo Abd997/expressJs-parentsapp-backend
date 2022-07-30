@@ -7,13 +7,13 @@ const {
 	normalRoutes
 } = require("./routes");
 const registerUser = require("./controllers/registerUser");
-const authenticateUser = require("./controllers/authenticateUser");
+const loginUser = require("./controllers/loginUser");
 
-const VERSION = "0.6.3";
+const VERSION = "0.7.0";
 
 app.use(express.json());
 
-app.post("/user/login", authenticateUser);
+app.post("/user/login", loginUser);
 
 app.post("/user/register", registerUser);
 
