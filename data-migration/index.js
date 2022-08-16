@@ -12,6 +12,7 @@ const migrate = async () => {
 	} catch (error) {
 		logger.error("Failed to migrate dev database");
 		logger.error(error);
+		console.log(error);
 		await client.end();
 		return;
 	}

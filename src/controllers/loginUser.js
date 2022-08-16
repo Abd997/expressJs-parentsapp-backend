@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
 		if (!user) {
 			throw new Error("User not found");
 		}
-		const token = jwt.sign(email, process.env.JWT_SIGN_SECRET);
+		const token = await jwt.sign(email, process.env.JWT_SIGN_SECRET);
 		res.status(200).json({
 			msg: "User successfully authenticated",
 			token: token

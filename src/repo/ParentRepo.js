@@ -5,7 +5,8 @@ const ParentRepo = {
 		const newUser = await connectedClient.query(`
       INSERT INTO parents (
         email, username, password
-      ) VALUES (
+      ) 
+      VALUES (
         '${parent.email}', '${parent.username}', '${parent.password}'
       )
     `);
@@ -30,7 +31,7 @@ const ParentRepo = {
       SELECT id from parents
       WHERE email = '${email}'
     ;`);
-		console.log(result);
+		// console.log(result);
 		if (result.rowCount == 0 || !result) {
 			return null;
 		}

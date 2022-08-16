@@ -1,6 +1,6 @@
 const { Client } = require("pg");
 const logger = require("../src/utils/logger");
-const config = require("./config");
+const config = require("../config/dbConfig");
 
 /**
  *
@@ -35,25 +35,25 @@ module.exports = async (client) => {
 
 	await client.query(`
 		CREATE TABLE parents (
-      id                      serial PRIMARY KEY,
-      username                VARCHAR ( 100 ) UNIQUE NOT NULL,
-      email                   VARCHAR ( 255 ) UNIQUE NOT NULL,
-      password                VARCHAR ( 100 ) NOT NULL,
-      age                     INTEGER,
-      estm_birth_date_child   VARCHAR( 100 ),
-      pregnancy_stage         INTEGER NOT NULL DEFAULT 1,
-      created_on              TIMESTAMP NOT NULL DEFAULT NOW(),
-      last_login              TIMESTAMP DEFAULT NOW() 
+      id                          serial PRIMARY KEY,
+      username                    VARCHAR ( 100 ) UNIQUE NOT NULL,
+      email                       VARCHAR ( 255 ) UNIQUE NOT NULL,
+      password                    VARCHAR ( 100 ) NOT NULL,
+      age                         INTEGER,
+      estm_birth_date_child       DATE DEFAULT NOW(),
+      pregnancy_stage             INTEGER NOT NULL DEFAULT 1,
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_login                  DATE DEFAULT NOW() 
     );`);
 
 	await client.query(`
     CREATE TABLE main_topics(
-      id                serial PRIMARY KEY,
-      name              VARCHAR ( 100 ) NOT NULL,
-      description       VARCHAR ( 1000 ),
-      pregnancy_stage   INTEGER NOT NULL,
-      created_on        TIMESTAMP NOT NULL DEFAULT NOW(),
-      last_updated      TIMESTAMP DEFAULT NOW() 
+      id                          serial PRIMARY KEY,
+      name                        VARCHAR ( 100 ) NOT NULL,
+      description                 VARCHAR ( 1000 ),
+      pregnancy_stage             INTEGER NOT NULL,
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_updated                DATE DEFAULT NOW() 
     );`);
 
 	await client.query(`
@@ -61,8 +61,8 @@ module.exports = async (client) => {
       id                          serial PRIMARY KEY,
       name                        VARCHAR ( 100 ) NOT NULL,
       description                 VARCHAR ( 1000 ),
-      created_on                  TIMESTAMP NOT NULL DEFAULT NOW(),
-      last_updated                TIMESTAMP DEFAULT NOW(),
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_updated                DATE DEFAULT NOW(),
       pregnancy_stage             INTEGER NOT NULL,
       fk_main_topic               integer,
       FOREIGN KEY(fk_main_topic)  REFERENCES main_topics(id)
@@ -75,10 +75,38 @@ module.exports = async (client) => {
       description                 VARCHAR ( 1000 ),
       signature                   VARCHAR ( 1000 ),
       pregnancy_stage             INTEGER NOT NULL,
-      created_on                  TIMESTAMP NOT NULL DEFAULT NOW(),
-      last_updated                TIMESTAMP DEFAULT NOW(),
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_updated                DATE DEFAULT NOW(),
       fk_sub_topic                integer,
       FOREIGN KEY(fk_sub_topic)   REFERENCES sub_topics(id)
+    );`);
+
+	await client.query(`
+    CREATE TABLE tasks(
+      id                          serial PRIMARY KEY,
+      name                        VARCHAR ( 100 ) NOT NULL,
+      description                 VARCHAR (1000),
+      comment                     VARCHAR (1000),
+      type                        VARCHAR (100) DEFAULT 'procurement',
+      status                      VARCHAR (100) DEFAULT 'open',
+      is_relevant                 BOOLEAN DEFAULT TRUE,
+      start_date                  DATE NOT NULL,
+      end_date                    DATE NOT NULL,
+      parent_email                VARCHAR (255) NOT NULL
+    );`);
+	await client.query(`
+      alter table tasks
+      add foreign key (parent_email)
+      references parents(email);
+    `);
+
+	await client.query(`
+    CREATE TABLE sub_tasks(
+      id                          serial PRIMARY KEY,
+      name                        VARCHAR ( 100 ) NOT NULL,
+      status                      BOOLEAN DEFAULT FALSE,
+      fk_task                     integer,
+      FOREIGN KEY(fk_task)        REFERENCES tasks(id)
     );`);
 
 	// insert 2 parents for every pregnancy stage
@@ -86,9 +114,9 @@ module.exports = async (client) => {
 		for (let j = 1; j < 7; j++) {
 			await client.query(`
         INSERT INTO parents (
-          username, password, email, age, pregnancy_stage, estm_birth_date_child
+          username, password, email, age, pregnancy_stage
         ) VALUES (
-          'parent${i}${j}', 'password', 'parent${i}${j}@gmail.com', 31, ${j}, ${Date.now()}
+          'parent${i}${j}', 'password', 'parent${i}${j}@gmail.com', 31, ${j}
         );`);
 		}
 	}
