@@ -2,6 +2,7 @@ require("dotenv").config();
 const e = require("express");
 const jwt = require("jsonwebtoken");
 const BadRequestError = require("../errors/BadRequestError");
+const AdminRepo = require("../repo/AdminRepo");
 const ParentRepo = require("../repo/ParentRepo");
 const sendErrorResponse = require("../sendErrorResponse");
 
@@ -21,11 +22,8 @@ module.exports = async (req, res, next) => {
 			throw new BadRequestError("Token not sent");
 		}
 
-		const email = await jwt.verify(
-			token,
-			process.env.JWT_SIGN_SECRET
-		);
-		const user = await ParentRepo.findUser(email);
+		const email = await jwt.verify(token, process.env.JWT_ADMIN);
+		const user = await AdminRepo.getAdmin(email);
 		if (!user) {
 			throw new BadRequestError("User is not registered");
 		}

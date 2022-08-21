@@ -3,7 +3,6 @@ const app = require("./app");
 const log = require("./utils/logger");
 const { connectDB } = require("./utils/database");
 const migrate = require("../data-migration");
-require("dotenv").config();
 
 (async () => {
 	try {

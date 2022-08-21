@@ -7,14 +7,16 @@ const {
 	normalRoutes
 } = require("./routes");
 const verifyToken = require("./utils/verifyToken");
+const verifyAdminToken = require("./utils/verifyAdminToken");
 
-const VERSION = "0.9.0";
+const VERSION = "1.0.0";
 
+app.use(express.static("images"));
 app.use(express.json());
 
-app.use("/admin", adminRoutes);
-app.use("/auth/user", verifyToken, authorizedRoutes);
 app.use("/", normalRoutes);
+app.use("/admin", verifyAdminToken, adminRoutes);
+app.use("/auth/user", verifyToken, authorizedRoutes);
 
 app.get("/version", (req, res) => {
 	res.send(VERSION);

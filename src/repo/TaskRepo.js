@@ -1,6 +1,6 @@
 const { connectedClient } = require("../utils/database");
 
-module.exports = TaskRepo = {
+const TaskRepo = {
 	addTask: async function (task, parentEmail) {
 		const res = await connectedClient.query(`
       INSERT INTO tasks (
@@ -50,3 +50,5 @@ module.exports = TaskRepo = {
 		return res.rows;
 	}
 };
+
+module.exports = TaskRepo;

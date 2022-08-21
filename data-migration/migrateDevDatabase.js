@@ -1,6 +1,7 @@
 const { Client } = require("pg");
 const logger = require("../src/utils/logger");
 const config = require("../config/dbConfig");
+const bcrypt = require("bcrypt");
 
 /**
  *
@@ -47,6 +48,15 @@ module.exports = async (client) => {
     );`);
 
 	await client.query(`
+    CREATE TABLE admins (
+      id                          serial PRIMARY KEY,
+      email                       VARCHAR ( 255 ) UNIQUE NOT NULL,
+      password                    VARCHAR ( 100 ) NOT NULL,
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_login                  DATE DEFAULT NOW() 
+    );`);
+
+	await client.query(`
     CREATE TABLE main_topics(
       id                          serial PRIMARY KEY,
       name                        VARCHAR ( 100 ) NOT NULL,
@@ -82,6 +92,17 @@ module.exports = async (client) => {
     );`);
 
 	await client.query(`
+    CREATE TABLE messages(
+      id                          serial PRIMARY KEY,
+      message_text                VARCHAR (1000) NOT NULL,
+      status                      VARCHAR (100) DEFAULT 'unread',
+      message_to                  VARCHAR (100),
+      message_from                VARCHAR (100),
+      created_on                  DATE NOT NULL DEFAULT NOW(),
+      last_updated                DATE DEFAULT NOW()      
+    );`);
+
+	await client.query(`
     CREATE TABLE tasks(
       id                          serial PRIMARY KEY,
       name                        VARCHAR ( 100 ) NOT NULL,
@@ -109,52 +130,65 @@ module.exports = async (client) => {
       FOREIGN KEY(fk_task)        REFERENCES tasks(id)
     );`);
 
-	// insert 2 parents for every pregnancy stage
-	for (let i = 0; i < 2; i++) {
-		for (let j = 1; j < 7; j++) {
-			await client.query(`
-        INSERT INTO parents (
-          username, password, email, age, pregnancy_stage
-        ) VALUES (
-          'parent${i}${j}', 'password', 'parent${i}${j}@gmail.com', 31, ${j}
-        );`);
-		}
-	}
+	const salt = await bcrypt.genSalt(10);
+	const hashPassword = await bcrypt.hash("ERDdNY3T%Q!bg*Gr", salt);
 
-	// insert main topics for every pregnancy stage
-	for (let i = 1; i < 7; i++) {
-		await client.query(`
-      INSERT INTO main_topics (
-          name, description, pregnancy_stage
-      ) VALUES (
-        'topic${i}', 'description', ${i}
-      );`);
-	}
+	// insert admin
+	await client.query(`
+    INSERT INTO admins (
+      email, password
+    ) VALUES (
+      'henri@stimdev.com',
+      '${hashPassword}'
+    )
+  `);
 
-	// insert 2 sub topics for every main topic
-	for (let i = 0; i < 2; i++) {
-		for (let j = 1; j < 7; j++) {
-			await client.query(`
-	      INSERT INTO sub_topics (
-	        name, description, fk_main_topic, pregnancy_stage
-	      ) VALUES (
-	        'subtopic${j}${i}', 'description', ${j}, ${j}
-	      ); `);
-		}
-	}
+	// // insert 2 parents for every pregnancy stage
+	// for (let i = 0; i < 2; i++) {
+	// 	for (let j = 1; j < 7; j++) {
+	// 		await client.query(`
+	//       INSERT INTO parents (
+	//         username, password, email, age, pregnancy_stage
+	//       ) VALUES (
+	//         'parent${i}${j}', 'password', 'parent${i}${j}@gmail.com', 31, ${j}
+	//       );`);
+	// 	}
+	// }
 
-	// insert 6 articles for every sub topic
-	for (let i = 1; i < 13; i++) {
-		for (let j = 1; j < 7; j++) {
-			await client.query(`
-	      INSERT INTO articles (
-	        headline, description, signature, pregnancy_stage, fk_sub_topic
-	      ) VALUES (
-	        'headline${i}${j}', 'description', 'signature', ${j}, ${i}
-	      );
-	    `);
-		}
-	}
+	// // insert main topics for every pregnancy stage
+	// for (let i = 1; i < 7; i++) {
+	// 	await client.query(`
+	//     INSERT INTO main_topics (
+	//         name, description, pregnancy_stage
+	//     ) VALUES (
+	//       'topic${i}', 'description', ${i}
+	//     );`);
+	// }
+
+	// // insert 2 sub topics for every main topic
+	// for (let i = 0; i < 2; i++) {
+	// 	for (let j = 1; j < 7; j++) {
+	// 		await client.query(`
+	//       INSERT INTO sub_topics (
+	//         name, description, fk_main_topic, pregnancy_stage
+	//       ) VALUES (
+	//         'subtopic${j}${i}', 'description', ${j}, ${j}
+	//       ); `);
+	// 	}
+	// }
+
+	// // insert 6 articles for every sub topic
+	// for (let i = 1; i < 13; i++) {
+	// 	for (let j = 1; j < 7; j++) {
+	// 		await client.query(`
+	//       INSERT INTO articles (
+	//         headline, description, signature, pregnancy_stage, fk_sub_topic
+	//       ) VALUES (
+	//         'headline${i}${j}', 'description', 'signature', ${j}, ${i}
+	//       );
+	//     `);
+	// 	}
+	// }
 
 	return client;
 };
