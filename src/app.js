@@ -9,7 +9,7 @@ const {
 const verifyToken = require("./utils/verifyToken");
 const verifyAdminToken = require("./utils/verifyAdminToken");
 
-const VERSION = "1.1.0";
+const VERSION = "1.1.1";
 
 app.use(express.static("images"));
 app.use(express.json());

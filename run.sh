@@ -1,5 +1,5 @@
 echo "Starting app"
 
 npm i
-npm build
+npm run build
 npm run prod
