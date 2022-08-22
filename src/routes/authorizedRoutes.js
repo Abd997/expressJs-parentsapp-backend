@@ -2,10 +2,12 @@ const route = require("express").Router();
 const userTasks = require("../controllers/user-tasks");
 const subTasks = require("../controllers/sub-tasks");
 const postMessage = require("../controllers/postMessage");
+const getMessage = require("../controllers/getMessage");
 
 // route.get("/articles", articles.validateReq, articles.getArticles);
 
 route.post("/message", postMessage);
+route.get("/message", getMessage);
 
 route.post("/update/childbirthdate/");
 
