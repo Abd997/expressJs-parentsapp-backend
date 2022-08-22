@@ -24,6 +24,10 @@ module.exports = async (req, res) => {
 		if (!article) {
 			throw new BadRequestError("Article does not exists");
 		}
+		await ArticleRepo.updateArticleImageFile(
+			req.file.filename,
+			articleId
+		);
 		res.json({
 			msg: "Image has been uploaded successfully"
 		});

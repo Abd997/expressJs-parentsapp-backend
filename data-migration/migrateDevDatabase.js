@@ -85,6 +85,7 @@ module.exports = async (client) => {
       description                 VARCHAR ( 1000 ),
       signature                   VARCHAR ( 1000 ),
       pregnancy_stage             INTEGER NOT NULL,
+      image_file                  VARCHAR(100),
       created_on                  DATE NOT NULL DEFAULT NOW(),
       last_updated                DATE DEFAULT NOW(),
       fk_sub_topic                integer,

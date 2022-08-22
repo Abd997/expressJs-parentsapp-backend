@@ -1,6 +1,13 @@
 const { connectedClient } = require("../utils/database");
 
 const ArticleRepo = {
+	updateArticleImageFile: async function (imageFile, articleId) {
+		const result = await connectedClient.query(`
+      UPDATE articles
+      SET image_file = '${imageFile}'
+      WHERE id = ${articleId}
+  ;`);
+	},
 	findArticles: async function (pregnancyStage) {
 		const result = await connectedClient.query(`
       SELECT * FROM articles
