@@ -143,7 +143,7 @@ module.exports = async (client) => {
     )
   `);
 
-	// // insert 2 parents for every pregnancy stage
+	// insert 2 parents for every pregnancy stage
 	// for (let i = 0; i < 2; i++) {
 	// 	for (let j = 1; j < 7; j++) {
 	// 		await client.query(`
@@ -156,39 +156,39 @@ module.exports = async (client) => {
 	// }
 
 	// // insert main topics for every pregnancy stage
-	// for (let i = 1; i < 7; i++) {
-	// 	await client.query(`
-	//     INSERT INTO main_topics (
-	//         name, description, pregnancy_stage
-	//     ) VALUES (
-	//       'topic${i}', 'description', ${i}
-	//     );`);
-	// }
+	for (let i = 1; i < 7; i++) {
+		await client.query(`
+	    INSERT INTO main_topics (
+	        name, description, pregnancy_stage
+	    ) VALUES (
+	      'topic${i}', 'description', ${i}
+	    );`);
+	}
 
 	// // insert 2 sub topics for every main topic
-	// for (let i = 0; i < 2; i++) {
-	// 	for (let j = 1; j < 7; j++) {
-	// 		await client.query(`
-	//       INSERT INTO sub_topics (
-	//         name, description, fk_main_topic, pregnancy_stage
-	//       ) VALUES (
-	//         'subtopic${j}${i}', 'description', ${j}, ${j}
-	//       ); `);
-	// 	}
-	// }
+	for (let i = 0; i < 2; i++) {
+		for (let j = 1; j < 7; j++) {
+			await client.query(`
+	      INSERT INTO sub_topics (
+	        name, description, fk_main_topic, pregnancy_stage
+	      ) VALUES (
+	        'subtopic${j}${i}', 'description', ${j}, ${j}
+	      ); `);
+		}
+	}
 
 	// // insert 6 articles for every sub topic
-	// for (let i = 1; i < 13; i++) {
-	// 	for (let j = 1; j < 7; j++) {
-	// 		await client.query(`
-	//       INSERT INTO articles (
-	//         headline, description, signature, pregnancy_stage, fk_sub_topic
-	//       ) VALUES (
-	//         'headline${i}${j}', 'description', 'signature', ${j}, ${i}
-	//       );
-	//     `);
-	// 	}
-	// }
+	for (let i = 1; i < 13; i++) {
+		for (let j = 1; j < 7; j++) {
+			await client.query(`
+	      INSERT INTO articles (
+	        headline, description, signature, pregnancy_stage, fk_sub_topic
+	      ) VALUES (
+	        'headline${i}${j}', 'description', 'signature', ${j}, ${i}
+	      );
+	    `);
+		}
+	}
 
 	return client;
 };
