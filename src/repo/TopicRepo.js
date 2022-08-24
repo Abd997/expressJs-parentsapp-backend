@@ -1,9 +1,30 @@
 const { connectedClient } = require("../utils/database");
 
 const TopicRepo = {
+	updateMainTopicImage: async function (mainTopicId, image) {
+		const res = await connectedClient.query(`
+      UPDATE main_topics
+      SET image_file = '${image}'      
+      WHERE id = ${mainTopicId}
+  ;`);
+		if (res.rowCount == 0) {
+			return null;
+		}
+		return res.rows;
+	},
+	findTopicById: async function (mainTopicId) {
+		const res = await connectedClient.query(`
+      SELECT * FROM main_topics
+      WHERE id = ${mainTopicId}
+  ;`);
+		if (res.rowCount == 0) {
+			return null;
+		}
+		return res.rows;
+	},
 	getTopicsForPregnancyStage: async function (stage) {
 		const res = await connectedClient.query(`
-      SELECT id, name, description FROM main_topics
+      SELECT * FROM main_topics
       WHERE pregnancy_stage = ${stage}
     `);
 		return res.rows;

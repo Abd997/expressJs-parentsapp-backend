@@ -1,5 +1,6 @@
 const express = require("express");
 const addArticleImage = require("../admin-controllers/addArticleImage");
+const addTopicImage = require("../admin-controllers/addTopicImage");
 const admin_articles = require("../admin-controllers/admin-articles");
 const { admin_chat } = require("../admin-controllers/admin-chat");
 const admin_sub_topic = require("../admin-controllers/admin-sub-topics");
@@ -22,6 +23,12 @@ route.post(
 	"/article/image",
 	multerStorage.single("image"),
 	addArticleImage
+);
+
+route.post(
+	"/topic/image",
+	multerStorage.single("image"),
+	addTopicImage
 );
 
 module.exports = route;

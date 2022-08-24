@@ -28,7 +28,7 @@ routes.get(
 );
 
 routes.get("/image/:imageName", async (req, res) => {
-	const root = path.join(__dirname, "../../images/articles");
+	const root = path.join(__dirname, "../../../images");
 	let options = {
 		root: root,
 		dotfiles: "deny",
