@@ -10,11 +10,6 @@ const getUsernameAvailability = require("../controllers/getUsernameAvailability"
 const loginUser = require("../controllers/loginUser");
 const registerUser = require("../controllers/registerUser");
 
-routes.get("/topics/pregnancy-month/:pregnancyStage", getTopics);
-
-routes.get("/articles/pregnancy-stage/:pregnancyStage", getArticles);
-routes.get("/articles/user/:email", getArticlesByEmail);
-
 routes.post("/user/login", loginUser);
 routes.post("/user/register", registerUser);
 

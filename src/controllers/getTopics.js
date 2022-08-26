@@ -1,4 +1,5 @@
 const e = require("express");
+const IrrelevantTopicRepo = require("../repo/IrrelevantTopicRepo");
 const TopicRepo = require("../repo/TopicRepo");
 const topicRepo = require("../repo/TopicRepo");
 const sendErrorResponse = require("../sendErrorResponse");
@@ -24,20 +25,33 @@ module.exports = async (req, res) => {
 	try {
 		await validate(req);
 		/** @type {string}*/
+		const { authUser } = req.body;
+		/** @type {Array} */
+		const irrelTopics = await IrrelevantTopicRepo.findAll(
+			authUser.id
+		);
 		const pregnancyStage = req.params.pregnancyStage;
-		let topics = [];
-		var data = await TopicRepo.getTopicsForPregnancyStage(
+		let topicsFiltered = [];
+		var allTopics = await TopicRepo.getTopicsForPregnancyStage(
 			pregnancyStage
 		);
-		for (let i = 0; i < data.length; i++) {
-			let subTopics = await topicRepo.getSubTopics(data[i].id);
-			data[i] = {
-				...data[i],
-				subTopics
-			};
-			topics.push(data);
+		for (let i = 0; i < allTopics.length; i++) {
+			let isTopicRelevant = true;
+			for (let i_1 = 0; i_1 < irrelTopics.length; i_1++) {
+				if (irrelTopics[i_1].main_topic_id === allTopics[i].id) {
+					isTopicRelevant = false;
+					break;
+				}
+			}
+			if (isTopicRelevant) {
+				let subTopics = await topicRepo.getSubTopics(allTopics[i].id);
+				topicsFiltered.push({
+					...allTopics[i],
+					subTopics
+				});
+			}
 		}
-		res.json({ topics: data });
+		res.json({ topics: topicsFiltered });
 	} catch (error) {
 		return sendErrorResponse(res, 500, error.message);
 	}

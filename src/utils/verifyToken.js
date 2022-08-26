@@ -31,6 +31,8 @@ module.exports = async (req, res, next) => {
 		}
 		req.body.email = email;
 		req.body.user = user;
+		req.body.authUser = user;
+
 		next();
 	} catch (error) {
 		if (error instanceof jwt.JsonWebTokenError) {

@@ -13,9 +13,6 @@ const ArticleRepo = {
       SELECT * FROM articles
       WHERE pregnancy_stage = ${pregnancyStage}
     `);
-		if (!result) {
-			throw new Error("No article found");
-		}
 		return result.rows;
 	},
 

@@ -68,6 +68,16 @@ module.exports = async (client) => {
     );`);
 
 	await client.query(`
+    CREATE TABLE user_irrelevant_main_topics(
+      id                          SERIAL PRIMARY KEY,
+      parent_id                   INTEGER NOT NULL,
+      main_topic_id               INTEGER NOT NULL,
+      FOREIGN KEY(main_topic_id)  REFERENCES main_topics(id) ON DELETE CASCADE,
+      FOREIGN KEY(parent_id)      REFERENCES parents(id) ON DELETE CASCADE,
+      UNIQUE(parent_id, main_topic_id)
+    );`);
+
+	await client.query(`
     CREATE TABLE sub_topics(
       id                          serial PRIMARY KEY,
       name                        VARCHAR ( 100 ) NOT NULL,
@@ -77,6 +87,16 @@ module.exports = async (client) => {
       pregnancy_stage             INTEGER NOT NULL,
       fk_main_topic               integer,
       FOREIGN KEY(fk_main_topic)  REFERENCES main_topics(id)
+    );`);
+
+	await client.query(`
+    CREATE TABLE user_irrelevant_sub_topics(
+      id                          SERIAL PRIMARY KEY,
+      parent_id                   INTEGER NOT NULL,
+      sub_topic_id                INTEGER NOT NULL,
+      FOREIGN KEY(sub_topic_id)   REFERENCES sub_topics(id) ON DELETE CASCADE,
+      FOREIGN KEY(parent_id)      REFERENCES parents(id) ON DELETE CASCADE,
+      UNIQUE(parent_id, sub_topic_id)
     );`);
 
 	await client.query(`
@@ -91,6 +111,19 @@ module.exports = async (client) => {
       last_updated                DATE DEFAULT NOW(),
       fk_sub_topic                integer,
       FOREIGN KEY(fk_sub_topic)   REFERENCES sub_topics(id)
+    );`);
+
+	await client.query(`
+    CREATE TABLE users_articles_preferences (
+      id                          serial PRIMARY KEY,
+      parent_id                   INTEGER NOT NULL,
+      article_id                  INTEGER NOT NULL,
+      is_read                     BOOLEAN DEFAULT false,
+      is_relevant                 BOOLEAN DEFAULT true,
+      is_favourite                BOOLEAN DEFAULT false,
+      FOREIGN KEY(parent_id)      REFERENCES parents(id) ON DELETE CASCADE,
+      FOREIGN KEY(article_id)     REFERENCES articles(id) ON DELETE CASCADE,
+      UNIQUE(parent_id, article_id)
     );`);
 
 	await client.query(`
@@ -133,7 +166,7 @@ module.exports = async (client) => {
     );`);
 
 	const salt = await bcrypt.genSalt(10);
-	const hashPassword = await bcrypt.hash("ERDdNY3T%Q!bg*Gr", salt);
+	let hashPassword = await bcrypt.hash("ERDdNY3T%Q!bg*Gr", salt);
 
 	// insert admin
 	await client.query(`
@@ -144,6 +177,14 @@ module.exports = async (client) => {
       '${hashPassword}'
     )
   `);
+
+	hashPassword = await bcrypt.hash("password", salt);
+	await client.query(`
+	  INSERT INTO parents (
+	  username, password, email, age, pregnancy_stage
+	  ) VALUES (
+	    'parent1', '${hashPassword}', 'parent1@gmail.com', 31, 1
+	  );`);
 
 	// insert 2 parents for every pregnancy stage
 	// for (let i = 0; i < 2; i++) {
@@ -157,14 +198,16 @@ module.exports = async (client) => {
 	// 	}
 	// }
 
-	// // insert main topics for every pregnancy stage
+	// // insert 2 main topics for every pregnancy stage
 	for (let i = 1; i < 7; i++) {
-		await client.query(`
-	    INSERT INTO main_topics (
-	        name, description, pregnancy_stage
-	    ) VALUES (
-	      'topic${i}', 'description', ${i}
-	    );`);
+		for (let i_1 = 0; i_1 < 2; i_1++) {
+			await client.query(`
+        INSERT INTO main_topics (
+            name, description, pregnancy_stage
+        ) VALUES (
+          'topic${i}${i_1}', 'description', ${i}
+        );`);
+		}
 	}
 
 	// // insert 2 sub topics for every main topic
