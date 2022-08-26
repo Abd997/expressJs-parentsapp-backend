@@ -3,11 +3,21 @@ const userTasks = require("../controllers/user-tasks");
 const subTasks = require("../controllers/sub-tasks");
 const postMessage = require("../controllers/postMessage");
 const getMessage = require("../controllers/getMessage");
+const getUserDetails = require("../controllers/getUserDetails");
+const update_user = require("../controllers/update-user");
 
+route.get("/details", getUserDetails);
+
+// ============ USER UPDATE ============
+route.put("/user-age", update_user.updateAge);
+route.put("/child-birth", update_user.updateChildBirth);
+route.put("/pregnancy-stage", update_user.updatePregnacyStage);
+route.put("/username", update_user.updateUsername);
+route.put("/email", update_user.updateEmail);
+
+// ============ CHAT ============
 route.post("/message", postMessage);
 route.get("/message", getMessage);
-
-route.post("/update/childbirthdate/");
 
 // ============ USER TASK ============
 route.post("/task", userTasks.addUserTask);

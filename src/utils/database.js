@@ -1,19 +1,21 @@
-const { Client } = require("pg");
+const pg = require("pg");
 const dbConfig = require("../../config/dbConfig");
 require("dotenv").config();
 
+pg.types.setTypeParser(1082, (value) => value);
+
 if (process.env.NODE_ENV === "production") {
-	var connectedClient = new Client({
+	var connectedClient = new pg.Client({
 		...dbConfig,
 		database: "db_prod"
 	});
 } else if (process.env.NODE_ENV === "development") {
-	var connectedClient = new Client({
+	var connectedClient = new pg.Client({
 		...dbConfig,
 		database: "db_dev"
 	});
 } else if (process.env.NODE_ENV === "test") {
-	var connectedClient = new Client({
+	var connectedClient = new pg.Client({
 		host: dbConfig.host,
 		database: "db_dev"
 	});

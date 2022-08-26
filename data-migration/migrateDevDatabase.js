@@ -41,7 +41,7 @@ module.exports = async (client) => {
       email                       VARCHAR ( 255 ) UNIQUE NOT NULL,
       password                    VARCHAR ( 100 ) NOT NULL,
       age                         INTEGER,
-      estm_birth_date_child       DATE DEFAULT NOW(),
+      estm_birth_date_child       DATE,
       pregnancy_stage             INTEGER NOT NULL DEFAULT 1,
       created_on                  DATE NOT NULL DEFAULT NOW(),
       last_login                  DATE DEFAULT NOW() 

@@ -1,6 +1,18 @@
 const { connectedClient } = require("../utils/database");
 
 const ParentRepo = {
+	updateOne: async function (columnToUpdate, newValue, parentEmail) {
+		const result = await connectedClient.query(
+			`
+      UPDATE parents
+      SET ${columnToUpdate} = $1
+      WHERE email = $2 
+  ;`,
+			[newValue, parentEmail]
+		);
+		// console.log(result);
+		return result.rows[0];
+	},
 	addParent: async function (parent) {
 		const newUser = await connectedClient.query(`
       INSERT INTO parents (
@@ -27,15 +39,27 @@ const ParentRepo = {
 	},
 
 	findUser: async function (email) {
-		const result = await connectedClient.query(`
-      SELECT id from parents
-      WHERE email = '${email}'
-    ;`);
+		const result = await connectedClient.query(
+			`
+      SELECT 
+        id, 
+        email, 
+        username, 
+        age, 
+        pregnancy_stage, 
+        estm_birth_date_child,
+        created_on,
+        last_login
+      FROM parents
+      WHERE email = $1
+    ;`,
+			[email]
+		);
 		// console.log(result);
 		if (result.rowCount == 0 || !result) {
 			return null;
 		}
-		return result;
+		return result.rows[0];
 	},
 
 	findUserByUsername: async function (username) {
