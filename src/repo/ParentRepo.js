@@ -27,10 +27,13 @@ const ParentRepo = {
 	},
 
 	authenticateUser: async function (email, password) {
-		const result = await connectedClient.query(`
+		const result = await connectedClient.query(
+			`
       SELECT id FROM parents
-      WHERE email='${email}' AND password='${password}'
-    ;`);
+      WHERE email = $1 AND password = $2
+    ;`,
+			[email, password]
+		);
 		// console.log(result);
 		if (result.rowCount == 0) {
 			return null;
