@@ -78,15 +78,18 @@ const ParentRepo = {
 	},
 
 	checkUser: async function (email) {
-		const result = await connectedClient.query(`
-      SELECT id from parents
-      WHERE email = '${email}'
-    ;`);
+		const result = await connectedClient.query(
+			`
+      SELECT * from parents
+      WHERE email = $1
+    ;`,
+			[email]
+		);
 		// console.log(result);
 		if (result.rowCount == 0) {
-			return false;
+			return null;
 		}
-		return true;
+		return result.rows[0];
 	},
 
 	getPregnancyStage: async function (email) {
