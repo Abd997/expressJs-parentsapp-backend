@@ -4,6 +4,8 @@ sub-topics. Each sub topic has several articles under them that the user can rea
 
 Parents can also add tasks and sub tasks under them. They can mark a task as completed or in process.
 
+Users can also talk with the admin of the app.
+
 ### Tech stack used
 - Express.js
 - Postgresql
@@ -15,3 +17,7 @@ Parents can also add tasks and sub tasks under them. They can mark a task as com
 ### Database
 The database used in this project is Postgres. Its open-source, highly-performant and well supported by the node community.
 Pg-client was used to connect Node.js with the postgres database.
+
+![database](design.png)
+
+The database entities are present in src/repo module. Separating them like this allowed for better testing and reusability.
